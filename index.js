@@ -14,8 +14,8 @@ app.get('/', (req, res) => res.send('NINJA-69 Github  , Rate Us A Star ⭐'))
 app.listen(port, () =>
   console.log(`Server Online`)
 );
-const Discord = require('discord.js-selfbot');
-const client = new Discord.Client();
+const { Client } = require("discord.js-selfbot-v13");
+const client = new Client();
 const { RichPresence, Util } = require("discord.js-selfbot-rpc")
 client.on('ready', async() => { // Using async-await to perform util get application assets
     const applicationId = '1232695238230020300'; // Your Application ID
