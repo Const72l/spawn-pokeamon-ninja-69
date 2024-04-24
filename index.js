@@ -12,73 +12,35 @@ const port = 3000
 app.get('/', (req, res) => res.send('NINJA-69 Github  , Rate Us A Star ⭐'))
 
 app.listen(port, () =>
-  console.log(`ninja is the best! it is better than rest`)
+  console.log(`Server Online`)
 );
 const Discord = require('discord.js-selfbot');
-const cron = require('node-cron');
-const settings = require('./config.json');
 const client = new Discord.Client();
-const prefix = settings.prefix;
-const color = "RANDOM";
-const spawnChannelID = settings.spawnChannelID;
-const botPrefix = settings.pokeTwoBotPrefix;
-const spamChannelID = settings.spamChannelID;
-var spamming = false;
-var chrons = false;
+const { RichPresence, Util } = require("discord.js-selfbot-rpc")
+client.on('ready', async() => { // Using async-await to perform util get application assets
+    const applicationId = '1232695238230020300'; // Your Application ID
 
-client.on("ready", () => {
-  console.log("[INFO] Starting...\n[INFO] NinSpammer");
-  if (settings.autoSpam == false) return;
-  client.channels.fetch(spamChannelID)
-    .then(channel => {
-      channel.send(`${prefix}spam on`);
-    })
-})
+    // This is example for get image assets data from application
+    const chromeImage = await Util.getAssets(applicationId, 'img1'); // Get image assets by name (chrome) from application assets
+    const googleImage = await Util.getAssets(applicationId, 'img2'); // Get image assets by name (google) from application assets
 
-client.on('message', msg => {
-  if (!msg.content.startsWith(prefix)) return;
-  if (msg.author.id != settings.ownerID) return;
-  let args = msg.content.toLowerCase().slice(prefix.length).trim().split(" ");
-  let cmd = args.shift();
-  if (cmd == "spam") {
-    msg.delete();
-    if (!args[0]) return;
-    if (args[0] == "on") {
-      if (spamming == true) return;
-      spamming = true;
-      if (chrons == true) return;
-      chrons = true;
-      return startChrons(msg);
-    }
-    if (args[0] == "off") {
-      return spamming = false;
-    }
-    return;
-  }
-  try {
-    msg.delete();
-    let cmdFile = require(`./commands/${cmd}.js`);
-    cmdFile.run(client, msg, args, settings, prefix, color);
-  } catch (e) {
-    console.log("[Commands] Not A Command");
-    console.log(e);
-  }
+    const presence = new RichPresence()
+        .setStatus('dnd') // Must be one of (online, idle, dnd) default is online
+        .setType('PLAYING') // Must be one of (PLAYING, STREAMING, LISTENING, WATCHING) default is PLAYING
+        .setApplicationId(applicationId)
+        .setName('Sleep')
+        .setDetails('Sleeping')
+        .setState('Try not to ping me XD')
+        .setAssetsLargeImage(chromeImage.id)
+        .setAssetsLargeText('Chrome')
+        .setAssetsSmallImage(googleImage.id)
+        .setAssetsSmallText('Google')
+        .setTimestamp();
+
+    client.user.setPresence(presence.toData());
+    console.log('Rich Presence has running...');
+
+    console.log(`Login as ${client.user.tag}`);
 });
-function startChrons(msg) {
-  cron.schedule('*/4 * * * * *', () => {
-    if (spamming) {
-      sendMsg(msg);
-    }
 
-  });
-  cron.schedule('*/6 * * * * *', () => {
-    if (spamming) {
-      sendMsg(msg);
-    }
-
-  });
-}
-function sendMsg(msg) {
-  msg.channel.send(Math.random().toString(36).substr(2, 7));
-}
 client.login(process.env.token);
