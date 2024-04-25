@@ -28,9 +28,9 @@ client.on('ready', async() => { // Using async-await to perform util get applica
         .setStatus('dnd') // Must be one of (online, idle, dnd) default is online
         .setType('PLAYING') // Must be one of (PLAYING, STREAMING, LISTENING, WATCHING) default is PLAYING
         .setApplicationId(applicationId)
-        .setName('Sleep')
-        .setDetails('Sleeping')
-        .setState('Try not to ping me XD')
+        .setName('Bored')
+        .setDetails('Gimme somethin to do')
+        .setState('Welp')
         .setAssetsLargeImage(chromeImage.id)
         .setAssetsLargeText('Chrome')
         .setAssetsSmallImage(googleImage.id)
